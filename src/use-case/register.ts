@@ -1,4 +1,3 @@
-import { prisma } from '@/lib/prisma';
 import { hash } from 'bcryptjs';
 
 interface RegisterUse{
@@ -7,25 +6,24 @@ interface RegisterUse{
     password: string
 }
 
-export async function registerUseCase(u: RegisterUse){
-	const _userFind = await prisma.user.findUnique({
-		where:{
-			email: u.email
+
+export class RegisterUseCase{
+
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	constructor(private _repo: any){}
+
+	async execute(u: RegisterUse){
+   
+		if(await this._repo.findbyEmail(u.email)){
+			throw new Error('Email in use.');
 		}
-	});
+    
+		const _hash = await hash(u.password, 6);
 
-	if(_userFind){
-		throw new Error('Email in use.');
-	}
-
-	const _hash = await hash(u.password, 6);
-
-	await prisma.user.create({
-		data:{
+		await this._repo.create({
 			name: u.name,
 			email: u.email,
 			password_hash: _hash
-		}
-	});
-
+		});
+	}
 }
