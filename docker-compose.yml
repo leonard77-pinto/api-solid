@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  postgresql:
+    image: bitnami/postgresql:latest
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRESQL_USERNAME=dev
+      - POSTGRESQL_PASSWORD=dev123
+      - POSTGRESQL_DATABASE=apidb
