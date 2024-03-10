@@ -9,7 +9,6 @@ const schema = z.object({
 const _v = schema.safeParse(process.env)
 
 if (!_v.success){
-    console.error('Invalid .env content!', _v.error.format())
     throw new Error('Invalid .env content!')
 }
 

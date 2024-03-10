@@ -1,4 +1,7 @@
+import { IRepositoryUser } from '@/repositories/user-repositoy-interface';
 import { hash } from 'bcryptjs';
+import { EmailExistError } from './erros/email-exist-error';
+import { User } from '@prisma/client';
 
 interface RegisterUse{
     name: string
@@ -6,24 +9,31 @@ interface RegisterUse{
     password: string
 }
 
+interface RegisterResponse{
+	user: User
+}
 
 export class RegisterUseCase{
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	constructor(private _repo: any){}
+	constructor(private _repo: IRepositoryUser){}
 
-	async execute(u: RegisterUse){
-   
-		if(await this._repo.findbyEmail(u.email)){
-			throw new Error('Email in use.');
+	async execute(u: RegisterUse): Promise<RegisterResponse>{
+		const _t = await this._repo.findByEmail(u.email)
+
+		if(_t){
+			throw new EmailExistError()
 		}
     
 		const _hash = await hash(u.password, 6);
 
-		await this._repo.create({
+		const _ret = await this._repo.create({
 			name: u.name,
 			email: u.email,
 			password_hash: _hash
 		});
+
+		return {
+			user: _ret
+		}
 	}
 }
