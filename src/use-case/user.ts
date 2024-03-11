@@ -1,4 +1,4 @@
-import { IRepositoryUser } from '@/repositories/user-repositoy-interface';
+import { UserRepository } from '@/repositories/user-repositoy-interface';
 import { hash } from 'bcryptjs';
 import { EmailExistError } from './erros/email-exist-error';
 import { User } from '@prisma/client';
@@ -13,9 +13,9 @@ interface RegisterResponse{
 	user: User
 }
 
-export class RegisterUseCase{
+export class UserUseCase{
 
-	constructor(private _repo: IRepositoryUser){}
+	constructor(private _repo: UserRepository){}
 
 	async execute(u: RegisterUse): Promise<RegisterResponse>{
 		const _t = await this._repo.findByEmail(u.email)

@@ -1,12 +1,11 @@
 import { FastifyRequest, FastifyReply} from 'fastify';
 import { z } from 'zod';
-import { RegisterUseCase } from '@/use-case/register';
-import { UserRepository } from '@/repositories/prisma-user-repository';
 import { EmailExistError } from '@/use-case/erros/email-exist-error';
+import { userUseCaseFactory } from '@/use-case/factories/user-use-case-factory';
 
 export async function createUser(request: FastifyRequest, reply: FastifyReply){
 	
-	const _register = new RegisterUseCase(new UserRepository());
+	const _register = userUseCaseFactory()
 
 	const schemaUser = z.object({
 		name: z.string(),

@@ -1,13 +1,13 @@
 import {describe, expect, it} from 'vitest'
-import { RegisterUseCase } from './register'
+import { UserUseCase } from './user'
 import { compare } from 'bcryptjs'
 import { InMemoryRepository } from '@/repositories/in-memory-repository'
 import { EmailExistError } from './erros/email-exist-error'
 
-describe('register user', ()=>{
+describe('tests use-case user', ()=>{
     it('user register', async ()=>{
         const repo = new InMemoryRepository()
-        const register = new RegisterUseCase(repo)
+        const register = new UserUseCase(repo)
 
         const _u = await register.execute({
             name: 'duke',
@@ -20,7 +20,7 @@ describe('register user', ()=>{
 
     it('password hash', async ()=>{
         const repo = new InMemoryRepository()
-        const register = new RegisterUseCase(repo)
+        const register = new UserUseCase(repo)
 
         const _u = await register.execute({
             name: 'duke',
@@ -34,15 +34,7 @@ describe('register user', ()=>{
 
     it('valid email unique', async ()=>{
         const repo = new InMemoryRepository()
-        const register = new RegisterUseCase(repo)
-
-        // await register.execute({
-        //     name: 'duke',
-        //     email: 'duke@email.com',
-        //     password: '123'
-        // })
-        
-        //console.log(repo.findByEmail('duke@email.com'))
+        const register = new UserUseCase(repo)
 
         await register.execute({
             name: 'duke',
@@ -50,7 +42,7 @@ describe('register user', ()=>{
             password: '123'
         })
 
-        expect(() =>
+        await expect(() =>
             register.execute({
                 name: 'duke',
                 email: 'duke@email.com',

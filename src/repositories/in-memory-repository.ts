@@ -1,7 +1,7 @@
 import { Prisma, User } from '@prisma/client';
-import { IRepositoryUser } from './user-repositoy-interface';
+import { UserRepository } from './user-repositoy-interface';
 
-export class InMemoryRepository implements IRepositoryUser{
+export class InMemoryRepository implements UserRepository{
     public items: User[] = []
 
     async create(data: Prisma.UserCreateInput)  {
@@ -27,4 +27,12 @@ export class InMemoryRepository implements IRepositoryUser{
         return _user
     }
 
+    async findById(id: string) {
+        const user = this.items.find(i => i.id==id)
+        if(!user){
+            return null
+        }
+
+        return user
+    }
 }
