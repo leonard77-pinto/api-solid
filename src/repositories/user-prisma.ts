@@ -1,8 +1,8 @@
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@prisma/client';
-import { UserRepository } from './user-repositoy-interface';
+import { UserRepository } from './user-repositoy';
 
-export class UserRepositoryPrimsa implements UserRepository{
+export class UserRepositoryPrisma implements UserRepository{
 	findById(id: string): Promise<{ id: string; name: string; email: string; password_hash: string; created_at: Date; } | null> {
 		throw new Error('Method not implemented.');
 	}

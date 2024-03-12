@@ -1,16 +1,16 @@
 import {beforeEach, describe, expect, it} from 'vitest'
-import { InMemoryRepository } from '@/repositories/in-memory-repository'
+import { UserRepositoryMemory } from '@/repositories/user-memory'
 import { hash } from 'bcryptjs'
-import { UserNotExistError } from './erros/user-not-exist-error'
-import { UserRepository } from '@/repositories/user-repositoy-interface'
-import { ProfileUseCase } from './profile-use-case'
+import { UserNotExistError } from '../erros/user-not-exist-error'
+import { UserRepository } from '@/repositories/user-repositoy'
+import { ProfileUseCase } from '../profile'
 
 let rep: UserRepository
 let profileUseCase: ProfileUseCase
 
 describe('tests use-case profile', ()=>{
     beforeEach(()=>{
-        rep = new InMemoryRepository()
+        rep = new UserRepositoryMemory()
         profileUseCase = new ProfileUseCase(rep)
     })
         

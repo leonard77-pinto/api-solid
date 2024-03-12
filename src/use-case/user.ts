@@ -1,4 +1,4 @@
-import { UserRepository } from '@/repositories/user-repositoy-interface';
+import { UserRepository } from '@/repositories/user-repositoy';
 import { hash } from 'bcryptjs';
 import { EmailExistError } from './erros/email-exist-error';
 import { User } from '@prisma/client';

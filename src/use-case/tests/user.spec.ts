@@ -1,12 +1,12 @@
 import {describe, expect, it} from 'vitest'
-import { UserUseCase } from './user'
+import { UserUseCase } from '../user'
 import { compare } from 'bcryptjs'
-import { InMemoryRepository } from '@/repositories/in-memory-repository'
-import { EmailExistError } from './erros/email-exist-error'
+import { UserRepositoryMemory } from '@/repositories/user-memory'
+import { EmailExistError } from '../erros/email-exist-error'
 
 describe('tests use-case user', ()=>{
     it('user register', async ()=>{
-        const repo = new InMemoryRepository()
+        const repo = new UserRepositoryMemory()
         const register = new UserUseCase(repo)
 
         const _u = await register.execute({
@@ -19,7 +19,7 @@ describe('tests use-case user', ()=>{
     })
 
     it('password hash', async ()=>{
-        const repo = new InMemoryRepository()
+        const repo = new UserRepositoryMemory()
         const register = new UserUseCase(repo)
 
         const _u = await register.execute({
@@ -33,7 +33,7 @@ describe('tests use-case user', ()=>{
     })
 
     it('valid email unique', async ()=>{
-        const repo = new InMemoryRepository()
+        const repo = new UserRepositoryMemory()
         const register = new UserUseCase(repo)
 
         await register.execute({

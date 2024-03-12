@@ -1,8 +1,8 @@
-import { UserRepositoryPrimsa } from "@/repositories/prisma-user-repository";
+import { UserRepositoryPrisma } from "@/repositories/user-prisma";
 import { UserUseCase } from "../user";
 
 export function userUseCaseFactory(){
-    const userRepository = new UserRepositoryPrimsa()
+    const userRepository = new UserRepositoryPrisma()
     const userUseCase = new UserUseCase(userRepository);
 
     return userUseCase
