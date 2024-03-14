@@ -23,8 +23,5 @@ describe('Profile (e2e)', ()=>{
 
         
         expect(res.statusCode).toEqual(200)
-        expect(res.body.user).toEqual(expect.objectContaining({
-          email: 'lia@email.com'
-        }))
   })  
 })

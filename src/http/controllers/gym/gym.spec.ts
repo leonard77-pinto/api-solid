@@ -14,7 +14,7 @@ describe('Gym (e2e)', ()=>{
   })
   
   it('test-create-gym', async ()=>{
-        const token = await createUserAndAuthenticade(app)
+        const token = await createUserAndAuthenticade(app, true)
         
         const res = await request(app.server)
         .post('/gyms')

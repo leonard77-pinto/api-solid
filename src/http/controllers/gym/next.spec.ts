@@ -14,7 +14,7 @@ describe('Gym next (e2e)', ()=>{
   })
   
   it('test-search', async ()=>{
-        const token = await createUserAndAuthenticade(app)
+        const token = await createUserAndAuthenticade(app, true)
         
         await request(app.server)
         .post('/gyms')
