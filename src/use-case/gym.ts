@@ -1,4 +1,4 @@
-import { Gym, User } from "@prisma/client";
+import { Gym } from "@prisma/client";
 import { GymRepository } from "@/repositories/gym-repositoy";
 
 interface GymUseCaseReq{
@@ -16,9 +16,9 @@ export class GymUseCase{
 
     async execute({name, lati, long}: GymUseCaseReq): Promise<GymUseCaseRes>{
         const gym = await this.gymRepository.create({
-            name: name,
-            lati: lati,
-            long: long
+            name,
+            lati,
+            long
         })
 
         return {

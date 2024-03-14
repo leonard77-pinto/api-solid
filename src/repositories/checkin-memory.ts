@@ -6,15 +6,35 @@ import dayjs from 'dayjs';
 export class CheckInRepositoryMemory implements CheckInRepository{
     public items: CheckIn[] = []
 
+    async save(checkin: CheckIn) {
+        const index = this.items.findIndex(i => i.id===checkin.id)
+        
+        if (index >= 0){
+            this.items[index] = checkin
+        }
+
+        return checkin
+    }
+
+    async findById(id: string){
+        const check = this.items.find(item => item.id === id)
+
+        if(!check){
+            return null
+        }
+        
+        return check
+    }
+
     async countByUser(userId: string){
         return this.items
-            .filter(item => item.userId==userId)
+            .filter(item => item.userId===userId)
             .length
     }
 
     async findUserCheckIns(userId: string, page: number){
         return this.items
-            .filter(item => item.userId==userId)
+            .filter(item => item.userId===userId)
             .slice((page - 1) * 20, page * 20 )
     }
 
@@ -26,7 +46,7 @@ export class CheckInRepositoryMemory implements CheckInRepository{
         const checkIn = this.items.find((i) => {
             const _d = dayjs(i.created_at)
             const _v = _d.isAfter(dateStart) && _d.isBefore(dateEnd)
-            return i.userId == userId && _v
+            return i.userId === userId && _v
         })
 
         if (!checkIn) {
@@ -49,6 +69,4 @@ export class CheckInRepositoryMemory implements CheckInRepository{
 
         return c
     }
-
- 
 }

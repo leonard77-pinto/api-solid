@@ -1,4 +1,4 @@
-import { Gym, User } from "@prisma/client";
+import { Gym } from "@prisma/client";
 import { GymRepository } from "@/repositories/gym-repositoy";
 
 interface GymSearchUseCaseReq{

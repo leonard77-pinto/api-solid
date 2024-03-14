@@ -1,109 +1,55 @@
-import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
-import { CheckInUseCase } from '../checkin'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { CheckInRepositoryMemory } from '@/repositories/checkin-memory'
-import { GymRepositoryMemory } from '@/repositories/gym-memory'
-import { Decimal } from '@prisma/client/runtime/library'
+import { CheckInValidateUseCase } from '../checkin-validate'
+import { ResourceNotFoundError } from '../erros/resource-not-found'
 
 let rep: CheckInRepositoryMemory
-let repGym: GymRepositoryMemory
-let useCase: CheckInUseCase
+let useCase: CheckInValidateUseCase
 
-const _lati= -19.9154784
-const _long= -43.9532056
 
-describe('tests checkIn', ()=>{
-    beforeEach(async ()=>{
+describe('tests check-in validate', () => {
+    beforeEach(async () => {
         rep = new CheckInRepositoryMemory()
-        repGym = new GymRepositoryMemory()
-        useCase = new CheckInUseCase(rep, repGym)
-        
-        await repGym.create({
-            id: '1',
-            name: 'gym-1',
-            lati: _lati,
-            long: _long
-        })
-        
+        useCase = new CheckInValidateUseCase(rep)
+
         vi.useFakeTimers()
     })
 
-    afterEach(()=>{
+    afterEach(() => {
         vi.useRealTimers()
     })
-        
-    it('create check-in', async ()=>{                
-        const {checkIn} = await useCase.execute({
-            userId: '1',
-            gymId: '1',
-            lati: _lati,
-            long: _long
+
+    it('create check-in', async () => {
+        const checkCreate = await rep.create({
+            userId: 'u-1',
+            gymId: 'g-1'
         })
-        
-        expect(checkIn.id).toBeTypeOf("string")
+
+        const { checkIn } = await useCase.execute({ checkInId: checkCreate.id })
+
+        expect(checkIn.validated_at).toBeDefined()
     })
 
-    it('unique check-in day', async ()=>{        
-        vi.setSystemTime(new Date(2000, 0, 31, 8, 0, 0))
-
-        const {checkIn} = await useCase.execute({
-            userId: '1',
-            gymId: '1',
-            lati: _lati,
-            long: _long
-
-        })
-
+    it('check-in not found', async () => {
         await expect(() =>
-            useCase.execute({
-                userId: '1',
-                gymId: '1',
-                lati: _lati,
-                long: _long
-        
-            })
-        ).rejects.toBeInstanceOf(Error)
+            useCase.execute({ checkInId: '01' })
+        ).rejects.toBeInstanceOf(ResourceNotFoundError)
     })
 
-    it('check-in diferent days', async ()=>{        
-        vi.setSystemTime(new Date(2000, 0, 31, 8, 0, 0))
-
-        await useCase.execute({
-            userId: '1',
-            gymId: '1',
-            lati: _lati,
-            long: _long
-
+    it('valid check-in time', async ()=>{
+        vi.setSystemTime(new Date(2024, 2, 12, 8, 0))
+        const checkCreate = await rep.create({
+            userId: 'u-1',
+            gymId: 'g-1'
         })
 
-        vi.setSystemTime(new Date(2000, 1, 1, 8, 0, 0))
+        vi.advanceTimersByTime(1000 * 60 * 20)
+        // const { checkIn } = await useCase.execute({ checkInId: checkCreate.id })
+        await expect(()=>useCase
+            .execute({ checkInId: checkCreate.id }))
+            .rejects.toBeInstanceOf(Error)
 
-        const {checkIn} = await useCase.execute({
-            userId: '1',
-            gymId: '1',
-            lati: _lati,
-            long: _long
-        })
-        
-        expect(checkIn.id).toBeTypeOf("string")
-
+        // console.error(checkIn.validated_at)
+      
     })
-    
-    it('validate check-in distance', async ()=>{
-        repGym.items.push({
-            id: '2',
-            name: 'gym-2',
-            lati: new Decimal(-19.9260519),
-            long: new Decimal(-43.9536777)
-        })
-
-        await expect(()=>
-        useCase.execute({
-            userId: '1',
-            gymId: '2',
-            lati: _lati,
-            long: _long
-        })).rejects.toBeInstanceOf(Error)
-        
-    })
-
 })

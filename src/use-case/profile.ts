@@ -1,8 +1,6 @@
 import { UserRepository } from "@/repositories/user-repositoy";
 import { UserNotExistError } from "./erros/user-not-exist-error";
-import { compare } from "bcryptjs";
 import { User } from "@prisma/client";
-//import { type } from "os";
 
 interface ProfileUseCaseReq{
     id: string,
